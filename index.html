@@ -1,0 +1,568 @@
+
+
+
+
+
+
+
+
+
+<head>
+
+
+ 
+  <link rel="stylesheet" 
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    
+    #globeViz {
+      height: 100%;
+      width: calc(40% - 10px);
+      background-color: rgb(250, 250, 251);
+      float: left;
+    }
+
+
+
+    
+    #countryInfo {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+
+
+
+
+    * {
+  font-family: "Roboto", sans-serif;
+  color: #8b8d8f;
+}
+
+
+
+
+.player {
+  height: 100%;
+  width: 30%;
+  border-radius: 40px;
+  background: linear-gradient(to bottom, #33383e 0%, #17191d 100%);
+  margin: 0 auto;
+  display: block;
+  border: solid 2px #3e434c;
+  position: absolute; 
+    z-index: 100;       
+    top: 50%;         
+    right: 0%;          
+    transform: translateY(-50%); 
+}
+
+
+.zoom-btn {
+    top: 10px; 
+    z-index: 999;
+    padding: 10px 15px;
+    margin: 10px;
+    background-color: #007bff;
+    color: white; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer; 
+}
+
+.zoom-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.zoom-btn:active {
+    background-color: #003580; /* Even darker blue when the button is clicked */
+}
+
+
+.question-box {
+  position: absolute; 
+  bottom: 30px;
+  align-items: center;
+  left: 50%; 
+  transform: translateX(-50%); 
+  width: 200px; 
+  padding: 10px; 
+}
+
+.question-box input[type="text"] {
+    width: calc(100%); 
+    padding: 5px;
+    flex-grow: 1;
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid #333;
+}
+
+.question-box .search-container {
+    position: relative;
+    display: flex;
+    width: 100%;
+}
+
+
+.question-box .submit-icon {
+  position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 7px;
+    border-radius: 0 5px 5px 0;
+    background: #333; 
+    border-color: #000000;
+    font-size: 1px;
+    color:rgb(12, 13, 16)
+      cursor: pointer; 
+    }
+
+
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px;
+}
+
+.indicator {
+  font-size: 10px;
+}
+.small,
+.big,
+.big_play_pause {
+  border-radius: 50%;
+  height: 28px; 
+  width: 28px; 
+  background: radial-gradient(at bottom right, #292e35 0%, #292e34 80%);
+  border: none;
+  box-shadow: -5px -4px 7px 3px rgba(255, 255, 255, 0.04),
+    4px 4px 7px 3px rgb(39, 42, 47);
+  padding: 0;
+
+}.playpause {
+    text-align: center; 
+    line-height: 60px; 
+    height: 60px;
+}
+
+.big_play_pause .fa-play, .fa-pause {
+    font-size: 15px; 
+    vertical-align: middle; 
+    color: white;
+    text-shadow: 4px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+
+.big,
+.big_play_pause {
+  height: 42px; 
+  width: 42px; 
+  box-shadow: -5px -4px 7px 3px rgba(255, 255, 255, 0.04),
+    5px 4px 7px 2px rgb(14, 15, 16);
+  background: radial-gradient(at bottom right, #17191e 0%, #1d2025 80%);
+}
+
+.big_play_pause {
+  background: radial-gradient(at top left, #c92711 0%, #ea570a 80%);
+}
+
+
+.inner_button,
+.center,
+.inner_button_big,
+.playpause {
+  border-radius: 50%;
+  height: 25px; 
+  width: 25px; 
+  background: radial-gradient(
+    at top left,
+    rgba(46, 50, 58, 1) 0%,
+    rgba(28, 30, 35, 1) 80%
+  );
+  margin: 0 auto;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.inner_button_big {
+  height: 39px;
+  width: 39px;
+  background: radial-gradient(
+    at top left,
+    rgb(57, 59, 64) 0%,
+    rgb(12, 13, 16) 112%
+  );
+}
+
+.playpause {
+  height: 39px; 
+  width: 39px;
+  background: radial-gradient(at bottom right, #c92711 0%, #ea570a 80%);
+}
+
+.small:active {
+  transform: translateY(2px);
+  background: radial-gradient(at top left, #292e35 0%, #292e34 80%);
+}
+.inner_button:active {
+  background: radial-gradient(
+    at bottom right,
+    rgba(46, 50, 58, 1) 0%,
+    rgba(28, 30, 35, 1) 80%
+  );
+}
+.big_play_pause:active {
+  transform: translateY(4px);
+  background: radial-gradient(at bottom right, #c92711 0%, #ea570a 80%);
+}
+.playpause:active {
+  background: radial-gradient(at top left, #c92711 0%, #ea570a 80%);
+}
+
+.big:active {
+  transform: translateY(4px);
+  background: radial-gradient(at top left, #17191e 0%, #1d2025 80%);
+}
+.inner_button_big:active {
+  background: radial-gradient(
+    at bottom right,
+    rgb(57, 59, 64) 0%,
+    rgb(12, 13, 16) 112%
+  );
+}
+
+.center {
+  height: 154px; 
+  width: 154px;
+  box-shadow: -10px -7px 11px 3px rgba(255, 255, 255, 0.04),
+    7px 7px 11px 6px rgb(24, 26, 29);
+  background: radial-gradient(at top left, rgba(28, 30, 35, 1) 0%, #131416 85%);
+}
+
+.album {
+  border-radius: 50%;
+  height: 144px;
+  object-fit: cover;
+}
+
+
+.song_details {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-around;
+  margin: 30px 30px 0px 30px;
+}
+
+.slider {
+  margin: 15px auto;
+  margin-bottom: 10px;
+  width: 65%;
+}
+
+.slider_bar {
+  background: black;
+  height: 4px;
+
+  border-radius: 5px;
+  margin: 0 auto;
+  box-shadow: inset -2px -2px 2px 0px rgb(66, 70, 74),
+    inset 1px 1px 1px -1px rgb(0, 0, 0);
+}
+
+.time {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 7px;
+  margin-bottom: 5px;
+}
+.description{
+  line-height : 1.5;
+  margin : 20px
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+  </style>
+</head>
+
+<body>
+  <button id="zoomIn" class="zoom-btn">Zoom In</button>
+  <button id="zoomOut" class="zoom-btn">Zoom Out</button>
+  
+
+  
+  <div>
+    <div class="player">
+      <div class="top">
+        <button class="small">
+          <div class="inner_button">
+            <img style="height: 10px;"  </div>
+        </button>
+        <p class="indicator">PLAYING NOW</p>
+        <button class="small">
+          <div class="inner_button">
+            <img style="height: 10px;"      </div>
+        </button>
+        
+        <div class="question-box">
+          <div class="search-container">
+          <input type="text" placeholder="Country name here" id="questionInput">
+          <button id="searchButton" class="submit-icon">
+            <i class="fa-solid fa-check"></i>
+      </div>
+        </div>
+      </div>
+
+      <div class="song_details">
+        <div style="font-size: 20px;">Sample</div>
+        <div style="margin-top: 7px;font-size: 10px;">Nostalgia</div>
+      </div>
+
+      <div class="slider">
+        <div class="time">
+          <div>1:17</div>
+          <div>2:46</div>
+        </div>
+        <div class="slider_bar">
+          <div class="inner_slider_bar"></div>
+        </div>
+
+      </div>
+
+      <div class="controls">
+        <button class="big">
+          <div class="inner_button_big">
+            <i class = "fa-solid fa-backward"></i> 
+            <img style="height: 15px; transform: scale(-1);" 
+        </button>
+        <button class="big_play_pause">
+          <div class="playpause">
+
+            <i class="fa-solid fa-play" id="playIcon"></i> 
+            <i class="fa-solid fa-pause" id="pauseIcon" style="display: none;"></i> 
+          </div>
+        </button>
+        <button class="big">
+          <div class="inner_button_big">
+            <i class = "fa-solid fa-forward"></i> 
+            <img style="height: 15px;"
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+  <div class="container1">
+    <div id="globeViz"></div>
+    <div id="countryInfo"></div>
+  </div>
+
+
+  <audio id="audioPlayer" src="RIGHT RESEARCH CODE/sample4.mp3" style="display: none;"></audio>
+
+
+  <script src="//unpkg.com/globe.gl"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+
+
+  <script>
+    const world = Globe()(document.getElementById('globeViz'))
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+      
+      .pointOfView({ altitude: 4 }, 5000)
+      .polygonSideColor(() => 'rgba(0, 0, 0, 0)') 
+
+      .polygonLabel(({ properties: d }) => `
+        <b>${d.ADMIN} </b> <br />
+        <b>${d.SUBREGION}</b><br />
+        <b> ${d.REGION_WB}</b><br />
+        <b>${d.REGION_UN}</b> <br />
+        <b> ${d.name}</b><br />
+        
+      
+      `)
+      .onPolygonClick(({ properties: d }) => {
+        const countryInfo = document.getElementById('countryInfo');
+        countryInfo.innerHTML = `
+          <b>${d.ADMIN} (${d.ISO_A3})</b> <br />
+        `;
+        countryInfo.style.display = 'block';
+        const questionInput = document.getElementById('questionInput');
+  questionInput.value = d.ADMIN;
+})
+    
+
+    world.controls().autoRotate = false;
+    world.controls().RotateSpeed = 1.8;
+
+
+
+
+      
+  </script>
+
+
+
+<script>
+  document.querySelector('.big_play_pause').addEventListener('click', function() {
+      var playIcon = document.getElementById('playIcon');
+      var pauseIcon = document.getElementById('pauseIcon');
+
+      if (playIcon.style.display === 'none') {
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+      } else {
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'block';
+      }
+  });
+  
+</script>
+
+
+<script>
+let countriesData;
+
+fetch('ne_110m_admin_0_countries.geojson')
+  .then(res => res.json())
+  .then(countries => {
+    countriesData = countries.features;
+    world.polygonsData(countries.features)
+      .polygonCapColor(() => 'rgba(0, 0, 0, 0)')
+      .polygonSideColor(() => 'rgba(0, 0, 0, 0)');
+  });
+  fetch('ne_110m_populated_places_simple.geojson')
+  .then(res => res.json())
+  .then(cities => {
+    world.pointsData(cities.features);
+  });
+  function focusOnCountry(countryName) {
+    const country = countriesData.find(c => c.properties.ADMIN === countryName);
+    if (country) {
+        const [lng, lat] = country.geometry.coordinates[0][0];
+        world.pointOfView({ lat, lng, altitude: 2 }, 3000);
+    } else {
+        console.log("Country not found");
+    }
+}
+
+document.getElementById('searchButton').addEventListener('click', function() {
+    const countryName = document.getElementById('countrySearch').value;
+    focusOnCountry(countryName);
+});
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var scale = 1;
+    const content = document.getElementById('globeViz');
+    const zoomInButton = document.getElementById("zoomIn");
+    const zoomOutButton = document.getElementById("zoomOut");
+
+    zoomInButton.addEventListener("click", function() {
+        scale += 0.1;
+        content.style.transform = `scale(${scale})`;
+    });
+
+    zoomOutButton.addEventListener("click", function() {
+        scale = Math.max(1, scale - 0.1);
+        content.style.transform = `scale(${scale})`;
+    });
+});
+
+</script>
+
+<script>
+  const audioPlayer = document.getElementById('audioPlayer');
+  const playButton = document.querySelector('.big_play_pause');
+  const playIcon = document.getElementById('playIcon');
+  const pauseIcon = document.getElementById('pauseIcon');
+
+  playButton.addEventListener('click', function() {
+      if (audioPlayer.paused) {
+          audioPlayer.play();
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'block';
+      } else {
+          audioPlayer.pause();
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  });
+</script>
+</body>
