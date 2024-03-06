@@ -1,1 +1,442 @@
+<!--FULLY TRANSP = RGB 0 0 0 0 
+Polygons.globe.gl 
+QUERY TO CSV FILE WIITH COORD PARAMETERS 
+Last full save - 02/08/12:12
+Audio funnctionality test
+Obtain MP3 list?????
+any other functinoalities
+Binaural test 
+Last (find expansive csv file)-->
+
+
+
+
+<html>
+<head>
+  <title>Your Page Title</title>
+  <link rel="stylesheet" href="styles.css">
+  
+ 
+  <link rel="stylesheet" 
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+</head>
+
+
+
+
+
+<body>
+
+
+
+
+  <div>
+    <div class="player">
+      <div class="top">
+        <button class="small">
+          <div class="inner_button">
+            <img style="height: 10px;">
+        </button>
+        <p class="indicator">PLAYING NOW</p>
+        <button class="small">
+          <div class="inner_button">
+            <img style="height: 10px;">
+        </button>
+
+
+        
+        
+        <div class="question-box">
+          <div class="search-container">
+          <input type="text" placeholder="Country name here" id="questionInput">
+          <div id = "suggestionBox"> </div>
+          <button id="searchButton" class="submit-icon">
+            <i class="fa-solid fa-check"></i>
+      </div>
+        </div>
+      </div>
+
+      <div class="song_details">
+        <div style="font-size: 20px;">Sample</div>
+        <div style="margin-top: 7px;font-size: 10px;">Nostalgia</div>
+      </div>
+
+      <div class="slider">
+        <div class="time">
+          <div>1:17</div>
+          <div>2:46</div>
+        </div>
+        <div class="slider_bar">
+          <div class="inner_slider_bar"></div>
+        </div>
+
+      </div>
+
+      <div class="controls">
+        <button class="big">
+          <div class="inner_button_big">
+            <i class = "fa-solid fa-replay"></i>
+            <img style="height: 15px; transform: scale(-1);" 
+        </button>
+        <button class="big_play_pause">
+          <div class="playpause">
+
+            <i class="fa-solid fa-play" id="playIcon"></i> 
+            <i class="fa-solid fa-pause" id="pauseIcon" style="display: none;"></i> 
+          </div>
+        </button>
+        <button class="big">
+          <div class="inner_button_big">
+            <i class = "fa-solid fa-forward"></i> 
+            <img style="height: 15px;"
+          
+          </button>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+    <div class="globeViz">
+      
+  <button id="zoomIn" class="zoom-btn">
+    <i class="fa-solid fa-plus"></i>
+
+  </button>
+  <button id="zoomOut" class="zoom-btn">
+    <i class="fa-solid fa-minus"></i>
+  </button>
+      
+  
+    </div>
+    <div id="countryInfo"></div>
+
+
+  <audio id="audioPlayer" src="RIGHT RESEARCH CODE/sample4.mp3" style="display: none;"></audio>
+
+
+  <script src="//unpkg.com/globe.gl"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.0/gsap.min.js"></script>
+
+
+
+
+
+  /////GLOBE AND INPUT TO BOX CODE 
+  <script>
+    const world = Globe()(document.querySelector('.globeViz'))
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+
+      .pointOfView({ altitude: 4}, 0)
+      .polygonLabel(({ properties: d }) => `
+        <b>${d.ADMIN} </b> <br />
+        <b>${d.SUBREGION}</b><br />
+        <b> ${d.REGION_WB}</b><br />
+        <b>${d.REGION_UN}</b> <br />
+        <b>${d.ls_name}</b> <br />
+
+      `)
+
+      .onPolygonClick(({ properties: d }) => {
+        const countryInfo = document.getElementById('countryInfo');
+        countryInfo.innerHTML = `
+          <b>${d.ADMIN} (${d.ISO_A3})</b> <br />`;
+        const questionInput = document.getElementById('questionInput');
+  questionInput.value = d.ADMIN;
+})
+
+
+world.controls().autoRotate = false;
+world.controls().RotateSpeed = 1.8;
+
+let countriesData;
+let originalColors = {}; 
+let previouslySelectedPolygon = null;
+
+fetch('ne_110m_admin_0_countries.geojson')
+  .then(res => res.json())
+  .then(countries => {
+  countriesData = countries.features;
+  world.polygonsData(countries.features)
+    .polygonCapColor(() => 'rgba(117, 45, 45, 0)')
+    .polygonSideColor(() => 'rgba(0, 0, 0, 0.9)') 
+    .polygonAltitude(0.002)
+  });
+
+world.onPolygonClick((polygonData) => {
+  if (previouslySelectedPolygon) {
+    world.polygonsData([previouslySelectedPolygon])
+      .polygonCapColor(() => originalColors[previouslySelectedPolygon.properties.ISO_A3].capColor)
+      .polygonSideColor(() => originalColors[previouslySelectedPolygon.properties.ISO_A3].sideColor);
+  }
+
+
+  world.polygonsData([polygonData])
+    .polygonCapColor(() => 'rgba(255, 0, 0, 0.5)') 
+    .polygonSideColor(() => 'rgba(0, 0, 0, 0.8)');
+
+  const countryInfo = document.getElementById('countryInfo');
+  countryInfo.innerHTML = `<b>${polygonData.properties.ADMIN} (${polygonData.properties.ISO_A3})</b> <br />`;
+  const questionInput = document.getElementById('questionInput');
+  questionInput.value = polygonData.properties.ADMIN;
+
+  previouslySelectedPolygon = polygonData;
+
+  originalColors[polygonData.properties.ISO_A3] = {
+    capColor: 'rgba(117, 45, 45, 0)',
+    sideColor: 'rgba(0, 0, 0, 0.5)'
+  };
+});
+
+
+
+
+let citiesData;
+  fetch('ne_110m_populated_places_simple.geojson')
+  .then(res => res.json())
+  .then(places => {
+    citiesData = places.features;
+    world.labelsData(places.features)
+      .labelLat(p => p.properties.latitude)
+      .labelLng(p => p.properties.longitude)
+      .labelSize(0.5)
+      .labelDotRadius(0.4)
+      .labelText(p => `${p.properties.name}`)
+      .onLabelClick(p => {
+    const cityInfo = document.getElementById('countryInfo'); 
+    cityInfo.innerHTML = `<b>${p.properties.name},  <b>${p.properties.adm0name}</b>`;
+    cityInfo.style.display = 'block';
+
+    const questionInput = document.getElementById('questionInput'); 
+    questionInput.value = `${p.properties.name}, ${p.properties.adm0name}`;
+  })
+      (document.getElementById('globeViz'));
+
+     
+  });
+
+
+
+  let statesData;
+  fetch('us-states.json')
+  .then(res => res.json())
+  .then(states => {
+    statesData = states.features;
+    world.labelsData(states.features)
+      .labelLat(s => s.properties.latitude)
+      .labelLng(s => s.properties.longitude)
+      .labelSize(0.5)
+      .labelText(s => `${s.properties.name}`)
+      .onLabelClick(s => {
+    const statesInfo = document.getElementById('countryInfo'); 
+    statesInfo.innerHTML = `<b>${s.properties.name}</b>`;
+    statesInfo.style.display = 'block';
+
+    const questionInput = document.getElementById('questionInput'); 
+    questionInput.value = `${p.properties.name}`;
+  })
+      (document.getElementById('globeViz'));
+
+     
+  });
+
+
+
+
+
+      
+  </script>
+
+////////QUESTION BOX INPUT FILE 
+
+<script>
+  // Function to search through countries and cities data
+  function searchSuggestions(input) {
+    let suggestions = [];
+
+    // Search in countries data
+    if (countriesData) {
+      countriesData.forEach(country => {
+        if (country.properties.ADMIN.toLowerCase().includes(input.toLowerCase()) ||
+            country.properties.SUBREGION.toLowerCase().includes(input.toLowerCase()) ||
+            country.properties.REGION_UN.toLowerCase().includes(input.toLowerCase())) {
+          suggestions.push(country.properties.ADMIN);
+        }
+      });
+    }
+
+    // Search in cities data
+    if (citiesData) {
+      citiesData.forEach(city => {
+        if (city.properties.name.toLowerCase().includes(input.toLowerCase()) ||
+            city.properties.adm0name.toLowerCase().includes(input.toLowerCase())) {
+          suggestions.push(city.properties.name + ', ' + city.properties.adm0name);
+        }
+      });
+    }
+
+    return suggestions;
+  }
+
+  function highlightLocation(name) {
+  let foundCountry = countriesData.find(country => country.properties.ADMIN.toLowerCase() === name.toLowerCase());
+  let foundCity = citiesData.find(city => city.properties.name.toLowerCase() === name.toLowerCase());
+
+  if (foundCountry) {
+    world.polygonsData([foundCountry])
+      .polygonCapColor(() => 'rgba(255, 0, 0, 0.5)') // Highlight color for country
+      .polygonSideColor(() => 'rgba(255, 0, 0, 0.5)');
+  } 
+}
+
+
+  // Function to display suggestions
+  function displaySuggestions(suggestions) {
+    const suggestionsBox = document.getElementById('suggestionBox');
+    suggestionsBox.innerHTML = '';
+    suggestions.forEach(suggestion => {
+      const div = document.createElement('div');
+      div.innerHTML = suggestion;
+      div.classList.add('suggestion-item'); 
+      div.onclick = function() { // Add click event to each suggestion
+        document.getElementById('questionInput').value = this.innerHTML;
+        suggestionsBox.innerHTML = ''; // Clear suggestions after selection
+      };
+      suggestionsBox.appendChild(div);
+    });
+  }
+
+  // Event listener for input changes
+  document.getElementById('questionInput').addEventListener('input', (event) => {
+    const input = event.target.value;
+    if (input) {
+      const suggestions = searchSuggestions(input);
+      displaySuggestions(suggestions);
+      highlightLocation(input);
+    } else {
+      document.getElementById('suggestionBox').innerHTML = '';
+    }
+  });
+
+
+
+
+
+
+
+  function zoomToLocation(name) {
+    let foundCountry = countriesData.find(country => country.properties.ADMIN.toLowerCase() === name.toLowerCase());
+    
+    if (foundCountry) {
+      const target = {
+        longitude: foundCountry.properties.LONGITUDE,
+        latitude: foundCountry.properties.LATITUDE,
+        zoom: 2, 
+      };
+
+      const duration = 1;
+      gsap.to(world, duration, {
+        latitude: target.latitude,
+        longitude: target.longitude,
+        zoom: target.zoom,
+        ease: Power2.easeInOut,
+      });
+
+      world.polygonsData([foundCountry])
+        .polygonCapColor(() => 'rgba(255, 0, 0, 0.5)')
+        .polygonSideColor(() => 'rgba(255, 0, 0, 0.5)');
+    }
+  }
+
+
+
+
+
+
+
+  function highlightLocation(name) {
+  zoomToLocation(name);
+}
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
 </body>
+
+</html>
+
+
+
+
+<script>
+  document.querySelector('.big_play_pause').addEventListener('click', function() {
+      var playIcon = document.getElementById('playIcon');
+      var pauseIcon = document.getElementById('pauseIcon');
+
+      if (playIcon.style.display === 'none') {
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+      } else {
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'block';
+      }
+  });
+  
+</script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var scale = 1;
+    const content = document.getElementById('globeViz');
+    const zoomInButton = document.getElementById("zoomIn");
+    const zoomOutButton = document.getElementById("zoomOut");
+
+    zoomInButton.addEventListener("click", function() {
+        scale += 0.1;
+        content.style.transform = `scale(${scale})`;
+    });
+
+    zoomOutButton.addEventListener("click", function() {
+        scale = Math.max(1, scale - 0.1);
+        content.style.transform = `scale(${scale})`;
+    });
+  });
+</script>
+
+
+
+// Hide City pins
+// Autospin for text
+// Add track no.
+// Optional 2nd country (must be different?)
+//Confidence (Slider)- 2nd slider css
+//remove forward functionality before ans
+//Proximity to city functionality 
+//Zoom in then appears, City  (diplay= "none"  - to zoom-appear)
+//Send git
+//subregions highlight
+//on-click marker ( The location)
+// Proximity to on-click (question-input full)
+// location does not exist 
+// Add States
+// Add boundaries 
+//rmmbr export ( Geo-coordinate of pin, and chosen region- and label)
+//raised polygonsData
+//raised

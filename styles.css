@@ -1,0 +1,351 @@
+
+
+<meta name=" viewport" content= "width = device-width, initial-scale=1.0">
+
+
+ 
+  <link rel="stylesheet" 
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+body {
+    margin: 0
+}
+
+    .globeViz {
+      height: 100%;
+      width: 66%;
+      float: left;
+      position: relative;
+      border: none;
+      margin: 0;
+      box-sizing: border-box;
+      flex-grow: 1;
+    }
+    
+
+
+
+    
+    #countryInfo { 
+      position: relative;
+  
+      width: 66%;
+      float: left;
+      padding: 10px;
+      border-radius: 2px;
+      display: none;
+      z-index: 999;
+    }
+
+
+
+
+    * {
+  font-family: "Roboto", sans-serif;
+  color: #8b8d8f;
+}
+
+
+
+
+.player {
+  height: 100%;
+  width: 33%;
+  border-radius: 20px;
+  background: linear-gradient(to bottom, #33383e 0%, #17191d 100%);
+  margin: 0 auto;
+  display: block;
+  border: solid 2px #3e434c;
+  position: absolute;   
+    top: 0;         
+    right: 0;          
+    transform: translateY(0); 
+    z-index: 1000;
+}
+
+
+.zoom-btn {
+    top: 10px; 
+    z-index: 1000;
+    padding: 10px 15px;
+    margin: 10px;
+    background-color: #007bff;
+    color: white; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer; 
+}
+
+.zoom-btn:hover {
+    background-color: #0056b3; 
+}
+
+.zoom-btn:active {
+    background-color: #003580; 
+}
+
+
+.question-box {
+  position: absolute; 
+  bottom: 430px;
+  align-items: center;
+  left: 50%; 
+  transform: translateX(-50%); 
+  width: 200px; 
+  padding: 10px; 
+}
+
+.question-box input[type="text"] {
+    width: calc(100%); 
+    padding: 5px;
+    flex-grow: 1;
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid #333;
+}
+
+
+
+.question-box .search-container {
+    position: relative;
+    display: flex;
+    width: 100%;
+}
+
+.question-box .suggestion-box
+{
+    position: relative;
+    
+    background-color: #fff;
+    border: 1px solid #333;
+    border-radius: 0 0 5px 5px;
+    display: none;
+    border-top: none;
+    width: 100%;
+    top:
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+
+.question-box .suggestion-item {
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+
+}
+
+.question-box input[type="text"] + .suggestion-box {
+  display: block;
+}
+
+
+.suggestion-box .suggestion-item:hover {
+  background-color: #f2f2f2;
+}
+
+
+
+.question-box .submit-icon {
+  position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 7px;
+    border-radius: 0 5px 5px 0;
+    background: #333; 
+    border-color: #000000;
+    font-size: 1px;
+    color:rgb(12, 13, 16);
+    cursor: pointer; 
+    }
+
+
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px;
+}
+
+.indicator {
+  font-size: 10px;
+}
+.small,
+.big,
+.big_play_pause {
+  border-radius: 50%;
+  height: 28px; 
+  width: 28px; 
+  background: radial-gradient(at bottom right, #292e35 0%, #292e34 80%);
+  border: none;
+  box-shadow: -5px -4px 7px 3px rgba(255, 255, 255, 0.04),
+    4px 4px 7px 3px rgb(39, 42, 47);
+  padding: 0;
+
+}.playpause {
+    text-align: center; 
+    line-height: 60px; 
+    height: 60px;
+}
+
+.big_play_pause .fa-play, .fa-pause {
+    font-size: 15px; 
+    vertical-align: middle; 
+    color: white;
+    text-shadow: 4px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+
+.big,
+.big_play_pause {
+  height: 42px; 
+  width: 42px; 
+  box-shadow: -5px -4px 7px 3px rgba(255, 255, 255, 0.04),
+    5px 4px 7px 2px rgb(14, 15, 16);
+  background: radial-gradient(at bottom right, #17191e 0%, #1d2025 80%);
+}
+
+.big_play_pause {
+  background: radial-gradient(at top left, #c92711 0%, #ea570a 80%);
+}
+
+
+.inner_button,
+.center,
+.inner_button_big,
+.playpause {
+  border-radius: 50%;
+  height: 25px; 
+  width: 25px; 
+  background: radial-gradient(
+    at top left,
+    rgba(46, 50, 58, 1) 0%,
+    rgba(28, 30, 35, 1) 80%
+  );
+  margin: 0 auto;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.inner_button_big {
+  height: 39px;
+  width: 39px;
+  background: radial-gradient(
+    at top left,
+    rgb(57, 59, 64) 0%,
+    rgb(12, 13, 16) 112%
+  );
+}
+
+.playpause {
+  height: 39px; 
+  width: 39px;
+  background: radial-gradient(at bottom right, #c92711 0%, #ea570a 80%);
+}
+
+.small:active {
+  transform: translateY(2px);
+  background: radial-gradient(at top left, #292e35 0%, #292e34 80%);
+}
+
+
+
+
+.inner_button:active {
+  background: radial-gradient(
+    at bottom right,
+    rgba(46, 50, 58, 1) 0%,
+    rgba(28, 30, 35, 1) 80%
+  );
+}
+
+
+
+
+.big_play_pause:active {
+  transform: translateY(4px);
+  background: radial-gradient(at bottom right, #c92711 0%, #ea570a 80%);
+}
+
+
+
+.playpause:active {
+  background: radial-gradient(at top left, #c92711 0%, #ea570a 80%);
+}
+
+.big:active {
+  transform: translateY(4px);
+  background: radial-gradient(at top left, #17191e 0%, #1d2025 80%);
+}
+.inner_button_big:active {
+  background: radial-gradient(
+    at bottom right,
+    rgb(57, 59, 64) 0%,
+    rgb(12, 13, 16) 112%
+  );
+}
+
+.center {
+  height: 154px; 
+  width: 154px;
+  box-shadow: -10px -7px 11px 3px rgba(255, 255, 255, 0.04),
+    7px 7px 11px 6px rgb(24, 26, 29);
+  background: radial-gradient(at top left, rgba(28, 30, 35, 1) 0%, #131416 85%);
+}
+
+.album {
+  border-radius: 50%;
+  height: 144px;
+  object-fit: cover;
+}
+
+
+.song_details {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-around;
+  margin: 30px 30px 0px 30px;
+}
+
+
+
+
+.slider {
+  margin: 15px auto;
+  margin-bottom: 10px;
+  width: 65%;
+}
+
+.slider_bar {
+  background: black;
+  height: 4px;
+
+  border-radius: 5px;
+  margin: 0 auto;
+  box-shadow: inset -2px -2px 2px 0px rgb(66, 70, 74),
+    inset 1px 1px 1px -1px rgb(0, 0, 0);
+}
+
+.time {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 7px;
+  margin-bottom: 5px;
+}
+
+
+.description{
+  line-height : 1.5;
+  margin : 20px
+} 
