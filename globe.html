@@ -9,6 +9,17 @@ Binaural test
 Last (find expansive csv file)-->
 
 
+<!--FULLY TRANSP = RGB 0 0 0 0 
+Polygons.globe.gl 
+QUERY TO CSV FILE WIITH COORD PARAMETERS 
+Last full save - 02/08/12:12
+Audio funnctionality test
+Obtain MP3 list?????
+any other functinoalities
+Binaural test 
+Last (find expansive csv file)-->
+
+
 
 
 <html>
@@ -46,7 +57,8 @@ Last (find expansive csv file)-->
         </button>
 
 
-        
+        <audio id="audioPlayer" style="display: none;"></audio>
+
         
         <div class="question-box">
           <div class="search-container">
@@ -77,22 +89,20 @@ Last (find expansive csv file)-->
       <div class="controls">
         <button class="big">
           <div class="inner_button_big">
-            <i class = "fa-solid fa-replay"></i>
-            <img style="height: 15px; transform: scale(-1);" 
-        </button>
-        <button class="big_play_pause">
-          <div class="playpause">
+            <i class="fa-solid fa-backward-step"></i>            
+        <button id="playpause" class="big_play_pause">
 
-            <i class="fa-solid fa-play" id="playIcon"></i> 
-            <i class="fa-solid fa-pause" id="pauseIcon" style="display: none;"></i> 
-          </div>
-        </button>
+          <i class="fa-solid fa-play" id="playIcon"></i> 
+          <i class="fa-solid fa-pause" id="pauseIcon" style="display: none;"></i>         </button>
+        
+
         <button class="big">
           <div class="inner_button_big">
-            <i class = "fa-solid fa-forward"></i> 
-            <img style="height: 15px;"
+            <i class="fa-solid fa-forward-step" id = "NextIcon"></i>          
           
           </button>
+        </div>
+
         </button>
       </div>
 
@@ -115,7 +125,6 @@ Last (find expansive csv file)-->
     <div id="countryInfo"></div>
 
 
-  <audio id="audioPlayer" src="RIGHT RESEARCH CODE/sample4.mp3" style="display: none;"></audio>
 
 
   <script src="//unpkg.com/globe.gl"></script>
@@ -140,8 +149,7 @@ Last (find expansive csv file)-->
         <b>${d.SUBREGION}</b><br />
         <b> ${d.REGION_WB}</b><br />
         <b>${d.REGION_UN}</b> <br />
-        <b>${d.ls_name}</b> <br />
-
+    
       `)
 
       .onPolygonClick(({ properties: d }) => {
@@ -166,8 +174,8 @@ fetch('ne_110m_admin_0_countries.geojson')
   countriesData = countries.features;
   world.polygonsData(countries.features)
     .polygonCapColor(() => 'rgba(117, 45, 45, 0)')
-    .polygonSideColor(() => 'rgba(0, 0, 0, 0.9)') 
-    .polygonAltitude(0.002)
+    .polygonSideColor(() => 'rgba(0, 0, 0, 0.2)') 
+    .polygonAltitude(0.0)
   });
 
 world.onPolygonClick((polygonData) => {
@@ -223,29 +231,6 @@ let citiesData;
   });
 
 
-
-  let statesData;
-  fetch('us-states.json')
-  .then(res => res.json())
-  .then(states => {
-    statesData = states.features;
-    world.labelsData(states.features)
-      .labelLat(s => s.properties.latitude)
-      .labelLng(s => s.properties.longitude)
-      .labelSize(0.5)
-      .labelText(s => `${s.properties.name}`)
-      .onLabelClick(s => {
-    const statesInfo = document.getElementById('countryInfo'); 
-    statesInfo.innerHTML = `<b>${s.properties.name}</b>`;
-    statesInfo.style.display = 'block';
-
-    const questionInput = document.getElementById('questionInput'); 
-    questionInput.value = `${p.properties.name}`;
-  })
-      (document.getElementById('globeViz'));
-
-     
-  });
 
 
 
@@ -338,10 +323,12 @@ let citiesData;
       const target = {
         longitude: foundCountry.properties.LONGITUDE,
         latitude: foundCountry.properties.LATITUDE,
-        zoom: 2, 
+        zoom: 2, // You can adjust the zoom level as needed
       };
 
-      const duration = 1;
+      const duration = 1; // Animation duration in seconds
+
+      // Animate the rotation and zoom
       gsap.to(world, duration, {
         latitude: target.latitude,
         longitude: target.longitude,
@@ -349,6 +336,7 @@ let citiesData;
         ease: Power2.easeInOut,
       });
 
+      // Highlight the country
       world.polygonsData([foundCountry])
         .polygonCapColor(() => 'rgba(255, 0, 0, 0.5)')
         .polygonSideColor(() => 'rgba(255, 0, 0, 0.5)');
@@ -364,7 +352,7 @@ let citiesData;
   function highlightLocation(name) {
   zoomToLocation(name);
 }
-
+ 
 
 </script>
 
@@ -376,50 +364,193 @@ let citiesData;
 
 
 
-
-</body>
 
 </html>
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////PLAYLIST FUNCTIONALITY
 <script>
-  document.querySelector('.big_play_pause').addEventListener('click', function() {
-      var playIcon = document.getElementById('playIcon');
-      var pauseIcon = document.getElementById('pauseIcon');
 
-      if (playIcon.style.display === 'none') {
-          playIcon.style.display = 'block';
-          pauseIcon.style.display = 'none';
-      } else {
-          playIcon.style.display = 'none';
-          pauseIcon.style.display = 'block';
-      }
-  });
-  
+  const songs = ['songs/4_Koto Clip_0_11-0_16.mp3','songs/5_Dizi Clip_0_03-0_12.mp3','songs/7_Pipa Clip_0_00-0_08.mp3'];
+
+  var audioPlayer = document.getElementById('audioPlayer');
+
+let Index = 0;
+
+function playNext() {
+  Index = (Index + 1) % songs.length;
+  audioPlayer.src = songs[Index];
+  audioPlayer.play();
+}
+
+function playRand(){
+  Index = Math.floor(Math.random() * songs.length);
+  audioPlayer.src = songs[Index];
+  audioPlayer.play();
+}
+
+
+
+  document.getElementById('playpause').addEventListener('click', function() {
+    var playIcon = document.getElementById('playIcon');
+    var pauseIcon = document.getElementById('pauseIcon');
+
+    // Play or pause the music
+    if (audioPlayer.paused) {
+        if (!audioPlayer.src || audioPlayer.ended) {
+          playRand();
+        }
+        audioPlayer.play();
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+    } else {
+        audioPlayer.pause();
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+    }
+});
+document.getElementById('nextIcon').addEventListener('click', playNext);
+
 </script>
-
-
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var scale = 1;
-    const content = document.getElementById('globeViz');
-    const zoomInButton = document.getElementById("zoomIn");
-    const zoomOutButton = document.getElementById("zoomOut");
-
-    zoomInButton.addEventListener("click", function() {
-        scale += 0.1;
-        content.style.transform = `scale(${scale})`;
-    });
-
-    zoomOutButton.addEventListener("click", function() {
-        scale = Math.max(1, scale - 0.1);
-        content.style.transform = `scale(${scale})`;
-    });
-  });
-</script>
-
 
 
 // Hide City pins
